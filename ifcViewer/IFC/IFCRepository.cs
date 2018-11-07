@@ -11,29 +11,33 @@ namespace ifcViewer.IFC
 {
     public class IFCRepository
     {
-        public static IEnumerable<IIfcPropertySingleValue> GetPropsForProduct(string ifcProductID)
+        private const string Path = "C:\\Users\\zno\\source\\repos\\ifcViewer\\ifcViewer\\IFC_Models\\SampleHouse.ifc";
+        private IfcStore Model { get; set; }
+
+        public IFCRepository()
         {
-            const string Path = "C:\\Users\\zno\\source\\repos\\ifcViewer\\ifcViewer\\IFC_Models\\SampleHouse.ifc";
-            using (var model = IfcStore.Open(Path))
+            Model = IfcStore.Open(Path);
+        }
+        public IIfcObject GetProduct(string ifcProductID)
+        {
+            int ProductID = Convert.ToInt32(ifcProductID);
+
+            var Product = Model.Instances.Where(o => o.EntityLabel == ProductID).FirstOrDefault() as IIfcObject;
+            return Product;
+        }
+        public IEnumerable<IIfcPropertySingleValue> GetPropsForProduct(IIfcObject Product)
+        {
+            if (Product == null)
             {
-                var objects = model.Instances.Where(o => o.EntityLabel > 0);
-
-                var product = model.Instances.Where<IIfcProduct>(p => p.GlobalId == ifcProductID).FirstOrDefault();
-                if (product == null)
-                {
-                    return new List<IIfcPropertySingleValue>();
-                }
-
-                var properties = product.IsDefinedBy
-                    .Where(r => r.RelatingPropertyDefinition is IIfcPropertySet)
-                    .SelectMany(r => ((IIfcPropertySet)r.RelatingPropertyDefinition).HasProperties)
-                    .OfType<IIfcPropertySingleValue>();
-
-                foreach (var property in properties)
-                    Console.WriteLine($"Property: {property.Name}, Value: {property.NominalValue}");
-
-                return properties;
+                return new List<IIfcPropertySingleValue>();
             }
+
+            var Properties = Product.IsDefinedBy
+                .Where(r => r.RelatingPropertyDefinition is IIfcPropertySet)
+                .SelectMany(r => ((IIfcPropertySet)r.RelatingPropertyDefinition).HasProperties)
+                .OfType<IIfcPropertySingleValue>();
+
+            return Properties;
         }
     }
 }

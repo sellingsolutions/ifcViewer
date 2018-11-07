@@ -1,5 +1,6 @@
 {
   "Html": "/Views/WEXBIMViewer/Viewer.html",
   "ProductID$": "",
-  "ifcProduct" :  ""
+  "Type" :  "",
+  "Props": [ {} ]
 }

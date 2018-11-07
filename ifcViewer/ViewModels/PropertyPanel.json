@@ -1,4 +1,5 @@
 {
   "Html": "/Views/PropertyPanel/PropertyPanel.html",
-  "ifcProduct" : ""
+  "Property" :  "",
+  "Value": ""
 }

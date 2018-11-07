@@ -44,12 +44,6 @@
                         currentlySelectedElement = id;
                     }
 
-
-                    var span = document.getElementById('productId');
-                    if (span) {
-                        span.innerHTML = id;
-                    }
-
                     template.set("model.ProductID$", id);
 
                 });
@@ -57,19 +51,18 @@
                     viewer.setCameraTarget(args.id);
                 });
             </script>
-            <div>
-                <strong>
-                    <span id="fps"></span>
-                </strong>
-            </div>
-            <div>
-                <strong>
-                    <span id="productId"></span>
-                </strong>
-            </div>
 
             <div>
-                <h2>{{model.ifcProduct}}</h2>
+                <strong>
+                    FPS: <span id="fps"></span>
+                </strong>
+                <h3>{{model.Type}}</h3>
+                <template is="dom-repeat" items="{{model.Props}}">
+                    <div slot="ifcViewer/ifcProductProperties">
+                        <imported-template model="{{item}}" href$="{{item.Html}}">
+                        </imported-template>
+                    </div>
+                </template>
             </div>
         </template>
     </dom-bind>

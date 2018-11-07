@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Starcounter;
 using ifcViewer.ViewModels;
+using ifcViewer.Database;
 
 namespace ifcViewer.API
 {
@@ -23,7 +24,8 @@ namespace ifcViewer.API
                 Session.Ensure();
                 return Db.Scope(() =>
                 {
-                    return new Viewer { };
+                    var Selection = new Selection();
+                    return new Viewer { Data = Selection };
                 });
             });
 

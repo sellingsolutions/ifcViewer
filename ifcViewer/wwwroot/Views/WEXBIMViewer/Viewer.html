@@ -1,0 +1,85 @@
+﻿<link rel="import" href="/sys/polymer/polymer.html">
+<script src="xbim-viewer.debug.bundle.js"></script>
+
+<template>
+    <dom-bind>
+        <template is="dom-bind">
+
+            <div id="ifcViewer">
+                <canvas id="viewer" width="1024" height="768"></canvas>
+            </div>
+            <script type="text/javascript">
+                var viewer = new xViewer('viewer');
+                viewer.load('wexbim_files/SampleHouse.wexbim');
+
+                viewer.on('loaded', function () {
+                    viewer.start();
+                });
+
+                viewer.on('error', function (arg) {
+                    var container = document.getElementById('errors');
+                    if (container) {
+                        container.innerHTML = "<pre style='color:red;'>" + arg.message + "</pre> <br />" + container.innerHTML;
+                    }
+                });
+
+                viewer.on('fps', function (fps) {
+                    var span = document.getElementById('fps');
+                    if (span) {
+                        span.innerHTML = fps;
+                    }
+                });
+
+                var currentlySelectedElement = null;
+
+                viewer.on('pick', function (args) {
+                    var id = args.id;
+
+                    if (currentlySelectedElement && currentlySelectedElement === id) {
+                        viewer.setState(xState.XRAYVISIBLE, [id]);
+                        currentlySelectedElement = null;
+                    }
+                    else {
+                        viewer.setState(xState.HIGHLIGHTED, [id]);
+                        currentlySelectedElement = id;
+                    }
+
+
+                    var span = document.getElementById('productId');
+                    if (span) {
+                        span.innerHTML = id;
+                    }
+
+                    template.set("model.ProductID$", id);
+
+                });
+                viewer.on('mouseDown', function (args) {
+                    viewer.setCameraTarget(args.id);
+                });
+            </script>
+            <div>
+                <strong>
+                    <span id="fps"></span>
+                </strong>
+            </div>
+            <div>
+                <strong>
+                    <span id="productId"></span>
+                </strong>
+            </div>
+
+            <div>
+                <h2>{{model.ifcProduct}}</h2>
+            </div>
+        </template>
+    </dom-bind>
+
+    <script type="text/javascript">
+        var script = document._currentScript || document.currentScript;
+        var template = Polymer.Element ? script.previousElementSibling : script.previousElementSibling.firstElementChild;
+    </script>
+    <template is="declarative-shadow-dom">
+
+    </template>
+</template>
+

@@ -72,6 +72,9 @@ namespace ifcViewer.IFC
                 //using IfcRelContainedInSpatialElement to get contained elements
                 var containedElements = SpatialElement.ContainsElements.SelectMany(rel => rel.RelatedElements);
                 foreach (var element in containedElements)
+                {
+
+                }
 
             }
 

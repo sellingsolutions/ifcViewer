@@ -41,28 +41,45 @@ namespace ifcViewer.IFC
         }
 
        
-        public string GetHierarchy (IIfcObjectDefinition o)
+        public List<IIfcObjectDefinition> GetHierarchy (IIfcObjectDefinition Object)
         {
-            var Hierarchy = PrintHierarchy(o, 0);
+            var Hierarchy = PrintHierarchy(Object, 0);
             return Hierarchy;
         }
-        private string PrintHierarchy(IIfcObjectDefinition o, int level)
+        private List<IIfcObjectDefinition> PrintHierarchy(IIfcObjectDefinition Object, int level)
         {
-            var Hierarchy = string.Format("{0}{1} [{2}]", GetIndent(level), o.Name, o.GetType().Name);
+            var Hierarchy = new List<IIfcObjectDefinition>();
+
+            IIfcElement Element = Object as IIfcElement;
+
+            // If we're dealing with an element: Wall, Door, Window..
+            // Then we'll have a direct connection to the Spatial Structure that it's contained in
+            if (Element != null)
+            {
+                var Relation = Element.ContainedInStructure.FirstOrDefault() as IIfcRelContainedInSpatialStructure;
+                var RelatingStructure = Relation.RelatingStructure;
+                Hierarchy.Add(RelatingStructure);
+
+                Console.WriteLine();
+            }
+
+
 
             //only spatial elements can contain building elements
-            var spatialElement = o as IIfcSpatialStructureElement;
-            if (spatialElement != null)
+            IIfcSpatialStructureElement SpatialElement = Object as IIfcSpatialStructureElement;
+            if (SpatialElement != null)
             {
                 //using IfcRelContainedInSpatialElement to get contained elements
-                var containedElements = spatialElement.ContainsElements.SelectMany(rel => rel.RelatedElements);
+                var containedElements = SpatialElement.ContainsElements.SelectMany(rel => rel.RelatedElements);
                 foreach (var element in containedElements)
-                    Hierarchy += string.Format("{0}    ->{1} [{2}]", GetIndent(level), element.Name, element.GetType().Name) + "\n";
+
             }
 
             //using IfcRelAggregares to get spatial decomposition of spatial structure elements
-            foreach (var item in o.IsDecomposedBy.SelectMany(r => r.RelatedObjects))
-                Hierarchy += PrintHierarchy(item, level + 1) + "\n";
+            foreach (var item in Object.IsDecomposedBy.SelectMany(r => r.RelatedObjects))
+            {
+
+            }
 
             return Hierarchy;
         }

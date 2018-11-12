@@ -26,10 +26,11 @@ namespace ifcViewer.ViewModels
         {
             var ProductID = action.Value as string;
             var Product = IfcRepo.GetProduct(ProductID);
+            var Hierarchy = IfcRepo.GetHierarchy(Product);
+            
             var ProductType = Product.GetType().ToString().Replace("Xbim.Ifc2x3.", "");
             var Properties = IfcRepo.GetPropsForProduct(Product);
 
-            var Hierarchy = IfcRepo.GetHierarchy(Product);
 
             var NewSelection = new Selection()
             {

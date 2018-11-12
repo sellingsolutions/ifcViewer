@@ -11,7 +11,7 @@ namespace ifcViewer.IFC
 {
     public class IFCRepository
     {
-        private const string ModelName = "otc_conference_ifc_3.ifc";
+        private const string ModelName = "A2-400-V-0100000.ifc";
         private const string Path = "C:\\Users\\zno\\source\\repos\\ifcViewer\\ifcViewer\\IFC_Models\\" + ModelName;
 
         private IfcStore Model { get; set; }
@@ -52,7 +52,7 @@ namespace ifcViewer.IFC
         {
             var Hierarchy = new List<IIfcObjectDefinition>();
 
-            var Spaces = Model.Instances.Where<IIfcSpace>(s=>s.EntityLabel > 0);
+            var Spaces = Model.Instances.Where<IIfcTypeObject>(s=>s.EntityLabel > 0);
 
             IIfcElement Element = Object as IIfcElement;
 

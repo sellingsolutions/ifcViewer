@@ -129,7 +129,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="IFC_Models\A2-400-V-0100000.ifc" />
     <None Include="IFC_Models\four_story_office_building.ifc" />
+    <None Include="IFC_Models\hmb_knivsta.ifc" />
     <None Include="IFC_Models\otc_conference_center.ifc" />
     <None Include="IFC_Models\otc_conference_ifc_3.ifc" />
     <None Include="IFC_Models\revit_hq\revit_hq_office.ifc" />
@@ -147,7 +149,9 @@
     <TypedJSON Include="ViewModels\PropertyPanel.json">
       <Generator>MsBuild:Compile</Generator>
     </TypedJSON>
+    <None Include="wwwroot\wexbim_files\A2-400-V-0100000.wexbim" />
     <None Include="wwwroot\wexbim_files\four_story_office_building.wexbim" />
+    <None Include="wwwroot\wexbim_files\hmb_knivsta.wexbim" />
     <None Include="wwwroot\wexbim_files\otc_conference_ifc_3.wexbim" />
     <None Include="wwwroot\wexbim_files\revit_hq_office_RST.wexbim" />
     <None Include="wwwroot\wexbim_files\SampleHouse.wexbim" />

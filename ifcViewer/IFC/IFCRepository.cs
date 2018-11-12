@@ -11,7 +11,9 @@ namespace ifcViewer.IFC
 {
     public class IFCRepository
     {
-        private const string Path = "C:\\Users\\zno\\source\\repos\\ifcViewer\\ifcViewer\\IFC_Models\\SampleHouse.ifc";
+        private const string ModelName = "otc_conference_ifc_3.ifc";
+        private const string Path = "C:\\Users\\zno\\source\\repos\\ifcViewer\\ifcViewer\\IFC_Models\\" + ModelName;
+
         private IfcStore Model { get; set; }
 
         public IFCRepository()
@@ -49,6 +51,8 @@ namespace ifcViewer.IFC
         private List<IIfcObjectDefinition> PrintHierarchy(IIfcObjectDefinition Object, int level)
         {
             var Hierarchy = new List<IIfcObjectDefinition>();
+
+            var Spaces = Model.Instances.Where<IIfcSpace>(s=>s.EntityLabel > 0);
 
             IIfcElement Element = Object as IIfcElement;
 

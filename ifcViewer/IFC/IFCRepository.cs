@@ -12,11 +12,11 @@ namespace ifcViewer.IFC
     public class IFCRepository
     {
         private const string ModelName = "A2-400-V-0100000.ifc";
-        private const string Path = "C:\\Users\\zno\\source\\repos\\ifcViewer\\ifcViewer\\IFC_Models\\" + ModelName;
+        private const string DefaultPath = "C:\\Users\\zno\\source\\repos\\ifcViewer\\ifcViewer\\IFC_Models\\" + ModelName;
 
         private IfcStore Model { get; set; }
 
-        public IFCRepository()
+        public IFCRepository(string Path = DefaultPath)
         {
             Model = IfcStore.Open(Path);
         }
@@ -27,14 +27,14 @@ namespace ifcViewer.IFC
             var Product = Model.Instances.Where(o => o.EntityLabel == ProductID).FirstOrDefault() as IIfcObject;
             return Product;
         }
-        public IEnumerable<IIfcPropertySingleValue> GetPropsForProduct(IIfcObject Product)
+        public IEnumerable<IIfcPropertySingleValue> GetPropsForProduct(IIfcObject Object)
         {
-            if (Product == null)
+            if (Object == null)
             {
                 return new List<IIfcPropertySingleValue>();
             }
 
-            var Properties = Product.IsDefinedBy
+            var Properties = Object.IsDefinedBy
                 .Where(r => r.RelatingPropertyDefinition is IIfcPropertySet)
                 .SelectMany(r => ((IIfcPropertySet)r.RelatingPropertyDefinition).HasProperties)
                 .OfType<IIfcPropertySingleValue>();
@@ -48,11 +48,21 @@ namespace ifcViewer.IFC
             var Hierarchy = PrintHierarchy(Object, 0);
             return Hierarchy;
         }
+
         private List<IIfcObjectDefinition> PrintHierarchy(IIfcObjectDefinition Object, int level)
         {
             var Hierarchy = new List<IIfcObjectDefinition>();
 
-            var Spaces = Model.Instances.Where<IIfcTypeObject>(s=>s.EntityLabel > 0);
+            //var TypeObjects = Model.Instances.Where<IIfcTypeObject>(s=>s.EntityLabel > 0);
+            var Spaces = Model.Instances.Where<IIfcSpace>(s => s.EntityLabel > 0);
+            //var Zones = Model.Instances.Where<IIfcZone>(s => s.EntityLabel > 0);
+            //var Doors = Model.Instances.Where<IIfcDoor>(s => s.EntityLabel > 0);
+            //var Windows = Model.Instances.Where<IIfcWindow>(s => s.EntityLabel > 0);
+            //var Walls = Model.Instances.Where<IIfcWall>(s => s.EntityLabel > 0);
+            //var Roofs = Model.Instances.Where<IIfcRoof>(s => s.EntityLabel > 0);
+            //var SlabTypes = Model.Instances.Where<IIfcSlabType>(s => s.EntityLabel > 0);
+
+            var SpaceProps = GetPropsForProduct(Spaces.FirstOrDefault());
 
             IIfcElement Element = Object as IIfcElement;
 
@@ -74,8 +84,8 @@ namespace ifcViewer.IFC
             if (SpatialElement != null)
             {
                 //using IfcRelContainedInSpatialElement to get contained elements
-                var containedElements = SpatialElement.ContainsElements.SelectMany(rel => rel.RelatedElements);
-                foreach (var element in containedElements)
+                var ContainedElements = SpatialElement.ContainsElements.SelectMany(rel => rel.RelatedElements);
+                foreach (var ContainedElement in ContainedElements)
                 {
 
                 }
@@ -83,7 +93,7 @@ namespace ifcViewer.IFC
             }
 
             //using IfcRelAggregares to get spatial decomposition of spatial structure elements
-            foreach (var item in Object.IsDecomposedBy.SelectMany(r => r.RelatedObjects))
+            foreach (var SpatialStructure in Object.IsDecomposedBy.SelectMany(r => r.RelatedObjects))
             {
 
             }
